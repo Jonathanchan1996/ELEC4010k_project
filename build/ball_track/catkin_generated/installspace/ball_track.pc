@@ -1,0 +1,8 @@
+prefix=/home/jonathan/catkin_ws/install
+
+Name: ball_track
+Description: Description of ball_track
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/jonathan/catkin_ws/install/lib 
+Requires: 

@@ -1020,7 +1020,7 @@ sensor_msgs_generate_messages_py: cmake_check_build_system
 
 # fast build rule for target.
 sensor_msgs_generate_messages_py/fast:
-	$(MAKE) -f image_detect/CMakeFiles/sensor_msgs_generate_messages_py.dir/build.make image_detect/CMakeFiles/sensor_msgs_generate_messages_py.dir/build
+	$(MAKE) -f ball_track/CMakeFiles/sensor_msgs_generate_messages_py.dir/build.make ball_track/CMakeFiles/sensor_msgs_generate_messages_py.dir/build
 .PHONY : sensor_msgs_generate_messages_py/fast
 
 #=============================================================================
@@ -1033,7 +1033,7 @@ sensor_msgs_generate_messages_eus: cmake_check_build_system
 
 # fast build rule for target.
 sensor_msgs_generate_messages_eus/fast:
-	$(MAKE) -f image_detect/CMakeFiles/sensor_msgs_generate_messages_eus.dir/build.make image_detect/CMakeFiles/sensor_msgs_generate_messages_eus.dir/build
+	$(MAKE) -f ball_track/CMakeFiles/sensor_msgs_generate_messages_eus.dir/build.make ball_track/CMakeFiles/sensor_msgs_generate_messages_eus.dir/build
 .PHONY : sensor_msgs_generate_messages_eus/fast
 
 #=============================================================================
@@ -1046,7 +1046,7 @@ sensor_msgs_generate_messages_nodejs: cmake_check_build_system
 
 # fast build rule for target.
 sensor_msgs_generate_messages_nodejs/fast:
-	$(MAKE) -f image_detect/CMakeFiles/sensor_msgs_generate_messages_nodejs.dir/build.make image_detect/CMakeFiles/sensor_msgs_generate_messages_nodejs.dir/build
+	$(MAKE) -f ball_track/CMakeFiles/sensor_msgs_generate_messages_nodejs.dir/build.make ball_track/CMakeFiles/sensor_msgs_generate_messages_nodejs.dir/build
 .PHONY : sensor_msgs_generate_messages_nodejs/fast
 
 #=============================================================================
@@ -1059,7 +1059,7 @@ sensor_msgs_generate_messages_cpp: cmake_check_build_system
 
 # fast build rule for target.
 sensor_msgs_generate_messages_cpp/fast:
-	$(MAKE) -f image_detect/CMakeFiles/sensor_msgs_generate_messages_cpp.dir/build.make image_detect/CMakeFiles/sensor_msgs_generate_messages_cpp.dir/build
+	$(MAKE) -f ball_track/CMakeFiles/sensor_msgs_generate_messages_cpp.dir/build.make ball_track/CMakeFiles/sensor_msgs_generate_messages_cpp.dir/build
 .PHONY : sensor_msgs_generate_messages_cpp/fast
 
 #=============================================================================
@@ -1072,7 +1072,7 @@ sensor_msgs_generate_messages_lisp: cmake_check_build_system
 
 # fast build rule for target.
 sensor_msgs_generate_messages_lisp/fast:
-	$(MAKE) -f image_detect/CMakeFiles/sensor_msgs_generate_messages_lisp.dir/build.make image_detect/CMakeFiles/sensor_msgs_generate_messages_lisp.dir/build
+	$(MAKE) -f ball_track/CMakeFiles/sensor_msgs_generate_messages_lisp.dir/build.make ball_track/CMakeFiles/sensor_msgs_generate_messages_lisp.dir/build
 .PHONY : sensor_msgs_generate_messages_lisp/fast
 
 #=============================================================================

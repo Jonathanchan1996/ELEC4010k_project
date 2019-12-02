@@ -64,7 +64,7 @@ def image_callback(msg):
     global val_sim, cv2_img
     try:
         # Convert your ROS Image message to OpenCV2
-        cv2_img = bridge.imgmsg_to_cv2(msg, "mono16")
+        cv2_img = bridge.imgmsg_to_cv2(msg, "bgr8")
         #cv2_img = cv2.Canny(cv2_img,100,200)
         max_id = 0
         max = compare(0, cv2_img)
