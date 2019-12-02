@@ -1,0 +1,8 @@
+prefix=/home/jonathan/catkin_ws/install
+
+Name: part_tot_3
+Description: Description of part_tot_3
+Version: 1.0.0
+Cflags: 
+Libs: -L/home/jonathan/catkin_ws/install/lib 
+Requires: 

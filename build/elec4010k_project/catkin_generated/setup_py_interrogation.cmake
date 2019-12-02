@@ -1,0 +1,6 @@
+set(elec4010k_project_SETUP_PY_VERSION "0.0.0")
+set(elec4010k_project_SETUP_PY_SCRIPTS "")
+set(elec4010k_project_SETUP_PY_PACKAGES "your_package")
+set(elec4010k_project_SETUP_PY_PACKAGE_DIRS "src/your_package")
+set(elec4010k_project_SETUP_PY_MODULES "")
+set(elec4010k_project_SETUP_PY_MODULE_DIRS "")

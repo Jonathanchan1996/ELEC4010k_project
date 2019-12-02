@@ -1,0 +1,14 @@
+<package>
+  <description brief="hector_slam">
+
+     hector_slam
+
+  </description>
+  <author>Jonathan</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/hector_slam</url>
+
+</package>
+
+

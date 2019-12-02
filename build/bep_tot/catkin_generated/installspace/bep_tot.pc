@@ -1,0 +1,8 @@
+prefix=/home/jonathan/catkin_ws/install
+
+Name: bep_tot
+Description: Description of bep_tot
+Version: 1.0.0
+Cflags: 
+Libs: -L/home/jonathan/catkin_ws/install/lib 
+Requires: 
