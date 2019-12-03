@@ -121,7 +121,7 @@ def image_callback(msg):
         if(max<100): #thresholding for no picture detected
             max_id=len(name)-1
         #print(name[max_id], max)
-        if(max_id!=pic_len):    #not the last one-> not 
+        if(max_id!=pic_len):    #not the last one-> not
             marking(cv2_img, max_id)
     except CvBridgeError, e:
         print(e)
