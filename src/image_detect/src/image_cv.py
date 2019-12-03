@@ -28,7 +28,8 @@ pic.append(cv2.imread(path+'avril.jpg'))
 pic.append(cv2.imread(path+'levi.jpg'))
 pic.append(cv2.imread(path+'bloom.jpg'))
 pic.append(cv2.imread(path+'chinese.jpg'))
-
+voting =[]
+published =[]
 pic_len = len(pic)
 # Initiate SIFT detector
 sift = cv2.xfeatures2d.SIFT_create()
@@ -39,6 +40,8 @@ for i in range(0, pic_len):
     pic[i] = cv2.resize(pic[i], (pic_resize,pic_resize), interpolation = cv2.INTER_AREA)
     #pic[i] = cv2.flip(pic[i], 1)
     kp[i], des[i] = sift.detectAndCompute(pic[i],None)
+    voting.append(0)
+    published.append(False)
 # BFMatcher with default params
 bf = cv2.BFMatcher()
 
@@ -63,11 +66,11 @@ for i in range(0,pic_len):
 
 
 
-def marking(img,name_id): #Camera resectioning
+def pub_marking(img,name_id): #Camera resectioning & make marker
+    #conver to bw
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    _, th = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
-    _, contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-
+    _,th = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+    _,contours,_ = cv2.findContours(th, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
     # find the biggest area
     c = max(contours, key=cv2.contourArea)
     x, y, w, h = cv2.boundingRect(c)
@@ -98,9 +101,9 @@ def compare(i, cam_img): #i = id of given picture, cam_img = camera
                 good.append([m])
 
          #cv.drawMatchesKnn expects list of lists as matches.
-        img3 = cv2.drawMatchesKnn(pic[i],kp[i],cv2_img,kp_cam,good,None,flags=cv2.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)
-        cv2.imshow('look', img3)    #real time camera
-        cv2.waitKey(1)
+        #img3 = cv2.drawMatchesKnn(pic[i],kp[i],cv2_img,kp_cam,good,None,flags=cv2.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)
+        #cv2.imshow('look', img3)    #real time camera
+        #cv2.waitKey(1)
         return len(good) #how similar
     except:
         return -1
@@ -119,10 +122,14 @@ def image_callback(msg):
                 max_id=i
                 max=this
         if(max<100): #thresholding for no picture detected
+            voting[max_id]=0    #it is just a noise, reset vote counter
             max_id=len(name)-1
         #print(name[max_id], max)
-        if(max_id!=pic_len):    #not the last one-> not
-            marking(cv2_img, max_id)
+        else:    #not the last one-> not
+            voting[max_id] = voting[max_id]+1
+            if(voting>10 and ~(published[max_id])):  #continously 10 correct sample
+                pub_marking(cv2_img, max_id)
+                published[max_id] = True
     except CvBridgeError, e:
         print(e)
 
