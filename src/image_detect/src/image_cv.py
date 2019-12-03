@@ -35,11 +35,56 @@ sift = cv2.xfeatures2d.SIFT_create()
 # find the keypoints and descriptors with SIFT
 des= [None] * pic_len
 kp = [None] * pic_len
-for i in range(0, pic_len-1):
+for i in range(0, pic_len):
     pic[i] = cv2.resize(pic[i], (pic_resize,pic_resize), interpolation = cv2.INTER_AREA)
+    #pic[i] = cv2.flip(pic[i], 1)
     kp[i], des[i] = sift.detectAndCompute(pic[i],None)
 # BFMatcher with default params
 bf = cv2.BFMatcher()
+
+pub = rospy.Publisher('visualization_marker', Marker, queue_size=100)
+marker_arr = []
+for i in range(0,pic_len):
+    marker = Marker()
+    marker.header.frame_id = "camera_link"
+    marker.type = marker.TEXT_VIEW_FACING
+    marker.action = marker.ADD
+    marker.scale.x = 0.5
+    marker.scale.y = 0.5
+    marker.scale.z = 0.5
+    marker.color.a = 1.0
+    marker.color.r = 1.0
+    marker.color.g = 1.0
+    marker.color.b = 0.0
+    marker.pose.orientation.w = 1.0
+    marker.text = name[i]
+    marker.id = i
+    marker_arr.append(marker)
+
+
+
+def marking(img,name_id): #Camera resectioning
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    _, th = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+    _, contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+
+    # find the biggest area
+    c = max(contours, key=cv2.contourArea)
+    x, y, w, h = cv2.boundingRect(c)
+    # draw the book contour (in green)
+    cv2.rectangle(cv2_img,(x,y),(x+w,y+h),(0,255,0),2)
+    im_pix_h = h / 2
+    im_theta = ((math.pi / 8) * h) / (img.shape[1])
+    dist_pix = (im_pix_h) / math.tan(im_theta)
+    dist_x_real = ((dist_pix * 0.5) / im_pix_h)
+
+    marker_arr[name_id].pose.position.x = dist_x_real
+    marker_arr[name_id].pose.position.y = ((x + w / 2) / img.shape[1])
+    marker_arr[name_id].pose.position.z = 0
+
+    print(name[name_id] + " " + str(dist_x_real))
+    pub.publish(marker_arr[name_id])
+
 
 def compare(i, cam_img): #i = id of given picture, cam_img = camera
     # find the keypoints and descriptors with SIFT
@@ -67,16 +112,17 @@ def image_callback(msg):
         cv2_img = bridge.imgmsg_to_cv2(msg, "bgr8")
         #cv2_img = cv2.Canny(cv2_img,100,200)
         max_id = 0
-        max = compare(0, cv2_img)
-        for i in range(0, pic_len-1):
-            this = compare(i, cv2_img)
+        max = compare(0, cv2_img) + compare(0, cv2.flip(cv2_img, 1))    #marks of normal + flip
+        for i in range(0, pic_len):
+            this = compare(i, cv2_img) + compare(i, cv2.flip(cv2_img, 1))
             if(this>max):
                 max_id=i
                 max=this
-        if(max<20): #thresholding for no picture detected
+        if(max<100): #thresholding for no picture detected
             max_id=len(name)-1
-        print(name[max_id], max)
-
+        #print(name[max_id], max)
+        if(max_id!=pic_len):    #not the last one-> not 
+            marking(cv2_img, max_id)
     except CvBridgeError, e:
         print(e)
 
