@@ -14,13 +14,18 @@ from cv_bridge import CvBridge, CvBridgeError
 # ROS Image message
 from sensor_msgs.msg import Image
 from geometry_msgs.msg import Twist
+from std_msgs.msg import String
 import numpy as np
-import sys
+
 # Instantiate CvBridge
 bridge = CvBridge()
 #Kp, Ki, Kd, sp, I_accum, D_lastError, I_accum_max, max_limit, Past_output
 lin_pid = np.array([1.0/256, 0.00/256, 0.01/256, 180, 0.0, 0.0, 1.,1., 0.0])
 ang_pid = np.array([5.0/256, 0.01/256, 0.05/256, 256, 0.0, 0.0, 1.,2.5, 0.0])
+def plt_error(new):
+    pub = rospy.Publisher('PID_log', String, queue_size=10)
+    data = new
+    pub.publish(data)
 
 def pid(PID, y):
     e=(y-PID[3])
@@ -35,6 +40,7 @@ def pid(PID, y):
     elif output<-PID[7]:
         output=-PID[7]
     #print e
+    plt_error(e)
     PID[8]=output
     return output
 
