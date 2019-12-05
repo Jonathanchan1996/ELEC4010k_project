@@ -28,6 +28,13 @@ pic.append(cv2.imread(path+'avril.jpg'))
 pic.append(cv2.imread(path+'levi.jpg'))
 pic.append(cv2.imread(path+'bloom.jpg'))
 pic.append(cv2.imread(path+'chinese.jpg'))
+
+pic_f = []
+pic_f.append(cv2.imread(path+'obama.jpg'))
+pic_f.append(cv2.imread(path+'avril.jpg'))
+pic_f.append(cv2.imread(path+'levi.jpg'))
+pic_f.append(cv2.imread(path+'bloom.jpg'))
+pic_f.append(cv2.imread(path+'chinese.jpg'))
 voting =[]
 published =[]
 pic_len = len(pic)
@@ -36,10 +43,13 @@ sift = cv2.xfeatures2d.SIFT_create()
 # find the keypoints and descriptors with SIFT
 des= [None] * pic_len
 kp = [None] * pic_len
+des_f= [None] * pic_len
+kp_f = [None] * pic_len
 for i in range(0, pic_len):
     pic[i] = cv2.resize(pic[i], (pic_resize,pic_resize), interpolation = cv2.INTER_AREA)
-    #pic[i] = cv2.flip(pic[i], 1)
+    pic_f[i]=cv2.flip(pic[i], 1)
     kp[i], des[i] = sift.detectAndCompute(pic[i],None)
+    kp_f[i], des_f[i] = sift.detectAndCompute(pic_f[i],None)
     voting.append(0)
     published.append(False)
 # BFMatcher with default params
@@ -63,8 +73,6 @@ for i in range(0,pic_len):
     marker.text = name[i]
     marker.id = i
     marker_arr.append(marker)
-
-
 
 def pub_marking(img,name_id): #Camera resectioning & make marker
     #conver to bw
@@ -101,10 +109,23 @@ def compare(i, cam_img): #i = id of given picture, cam_img = camera
                 good.append([m])
 
          #cv.drawMatchesKnn expects list of lists as matches.
-        #img3 = cv2.drawMatchesKnn(pic[i],kp[i],cv2_img,kp_cam,good,None,flags=cv2.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)
-        #cv2.imshow('look', img3)    #real time camera
-        #cv2.waitKey(1)
-        return len(good) #how similar
+        img3 = cv2.drawMatchesKnn(pic[i],kp_f[i],cv2_img,kp_cam,good,None,flags=cv2.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)
+        cv2.imshow('look', img3)    #real time camera
+        cv2.waitKey(3)
+        #Flipped
+        matches = bf.knnMatch(des_f[i],des_cam,k=2)
+        # Apply ratio test
+        good_f = []
+        for m,n in matches:
+            if m.distance < 0.75*n.distance:
+                good.append([m])
+
+         #cv.drawMatchesKnn expects list of lists as matches.
+        img3 = cv2.drawMatchesKnn(pic_f[i],kp_f[i],cv2_img,kp_cam,good,None,flags=cv2.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)
+        cv2.imshow('look', img3)    #real time camera
+        cv2.waitKey(3)
+
+        return len(good)+len(good_f) #how similar
     except:
         return -1
 
@@ -115,9 +136,9 @@ def image_callback(msg):
         cv2_img = bridge.imgmsg_to_cv2(msg, "bgr8")
         #cv2_img = cv2.Canny(cv2_img,100,200)
         max_id = 0
-        max = compare(0, cv2_img) + compare(0, cv2.flip(cv2_img, 1))    #marks of normal + flip
+        max = compare(0, cv2_img) #+ compare(0, cv2.flip(cv2_img, 1))    #marks of normal + flip
         for i in range(0, pic_len):
-            this = compare(i, cv2_img) + compare(i, cv2.flip(cv2_img, 1))
+            this = compare(i, cv2_img) #+ compare(i, cv2.flip(cv2_img, 1))
             if(this>max):
                 max_id=i
                 max=this

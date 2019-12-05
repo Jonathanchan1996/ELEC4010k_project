@@ -15,17 +15,16 @@ from cv_bridge import CvBridge, CvBridgeError
 from sensor_msgs.msg import Image
 from geometry_msgs.msg import Twist
 from std_msgs.msg import String
+from std_msgs.msg import Float32
+from std_msgs.msg import Float32MultiArray
+from std_msgs.msg import MultiArrayDimension
 import numpy as np
 
 # Instantiate CvBridge
 bridge = CvBridge()
 #Kp, Ki, Kd, sp, I_accum, D_lastError, I_accum_max, max_limit, Past_output
-lin_pid = np.array([1.0/256, 0.00/256, 0.01/256, 180, 0.0, 0.0, 1.,1., 0.0])
-ang_pid = np.array([5.0/256, 0.01/256, 0.05/256, 256, 0.0, 0.0, 1.,2.5, 0.0])
-def plt_error(new):
-    pub = rospy.Publisher('PID_log', String, queue_size=10)
-    data = new
-    pub.publish(data)
+lin_pid = np.array([0.9/256, 0.00/256, 0.01/256, 180, 0.0, 0.0, 1.,1., 0.0])
+ang_pid = np.array([4.5/256, 0.01/256, 0.05/256, 256, 0.0, 0.0, 1.,2.5, 0.0])
 
 def pid(PID, y):
     e=(y-PID[3])
@@ -40,9 +39,26 @@ def pid(PID, y):
     elif output<-PID[7]:
         output=-PID[7]
     #print e
-    plt_error(e)
     PID[8]=output
     return output
+
+ploting = rospy.Publisher('PIDerror', Float32, queue_size=10)
+mat = Float32MultiArray()
+def data_log_init():
+    #pri
+    mat.layout.dim.append(MultiArrayDimension())
+    mat.layout.dim[0].label = "error"
+    mat.layout.dim[0].size = 2
+    #mat.layout.dim[0].stride = 2
+    #mat.layout.data_offset = 0
+    mat.data = [0]*2
+
+def data_log():
+    mat.data[0]=lin_pid[5]
+    mat.data[1]=ang_pid[5]
+    rospy.loginfo(mat)
+    #ploting.publish(mat)
+    ploting.publish(ang_pid[5])
 
 def robot_control(lin, ang):
     velo=Twist()
@@ -71,7 +87,7 @@ def circle_detect(img): #return image, x, y, r
     circles = np.uint16(np.around(circles))
     for i in circles[0,:]:
         # draw the outer circle
-        cv2.circle(cimg,(i[0],i[1]),i[2],(0,255,0),2)
+        cv2.circle(cimg,(i[0],i[1]),i[2],(255,0,0),2)
         # draw the center of the circle
         cv2.circle(cimg,(i[0],i[1]),2,(0,0,255),3)
         #print("center:(",circles[0][0][0],",",circles[0][0][1],")")
@@ -83,7 +99,7 @@ def image_callback(msg):
     try:
         # Convert your ROS Image message to OpenCV2
         cv2_img = bridge.imgmsg_to_cv2(msg, "bgr8")
-        #cv2_img = cv2.blur(cv2_img, (10, 10))
+        cv2_img = cv2.blur(cv2_img, (5, 5))
         cv2_img,x,y,r = circle_detect(colorFiltering(cv2_img))
         #print(x, y, r)
         if(x!=-1):
@@ -91,16 +107,21 @@ def image_callback(msg):
             #robot_control(1*(float(r)-200)/256,0.5*(float(x)-256.0))
         else:
             robot_control(0,0)
-        cv2.imshow('filtered',cv2_img)
-        cv2.waitKey(1)
+        data_log()
+        br = CvBridge()
+        pub = rospy.Publisher('CV_result', Image,queue_size=10)
+        pub.publish(br.cv2_to_imgmsg(cv2_img, "bgr8"))
+        #cv2.imshow('filtered',cv2_img)
+        #cv2.waitKey(1)
     except CvBridgeError, e:
         print(e)
 
 def main():
-    print "ball tracker start"
+    print "4010k Ball Tracker start"
     rospy.init_node('ball_track')
     image_topic = "/vrep/image"
     rospy.Subscriber(image_topic, Image, image_callback)
+    data_log_init()
     rospy.spin()
 
 
