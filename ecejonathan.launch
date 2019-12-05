@@ -8,7 +8,7 @@
   <arg name="pub_map_odom_transform" default="true"/>
   <arg name="scan_subscriber_queue_size" default="5"/>
   <arg name="scan_topic" default="vrep/scan"/>
-  <arg name="map_size" default="1024"/>
+  <arg name="map_size" default="2048"/>
 
   <node pkg="hector_mapping" type="hector_mapping" name="hector_mapping" output="screen">
 
@@ -51,8 +51,19 @@
   <node pkg="tf" type="static_transform_publisher" name="world2map_broadcaster" args="0 0 0 0 0 0 world map 100"/>
   <node pkg="tf" type="static_transform_publisher" name="nav2base_broadcaster" args="0 0 0 0 0 0 nav base_link 100"/>
 
+  <!-- image detect NODE -->
+  <node pkg="image_detect" type="image_cv.py" name="image_detect"/>
+  <!--<node pkg="ball_track" type="track.py" name="ball_track"/>-->
+  <!-- PATH_TRACKING NODE - Recording only -->
+  <node pkg="hector_trajectory_server" type="hector_trajectory_server" name="hector_trajectory_server"
+  output="screen"/>
+
   <node pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" name="teleop" output="screen">
     <remap from="cmd_vel" to="vrep/cmd_vel"/>
   </node>
+  <!-- RVIZ NODE
+  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find rviz_pkg)/rviz_config.rviz"
+  output="screen"/>-->
+
 
 </launch>

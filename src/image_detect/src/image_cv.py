@@ -7,7 +7,7 @@
 
 # Using this OpenCV2 tutorial for saving Images:
 # http://opencv-python-tutroals.readthedocs.org/en/latest/py_tutorials/py_gui/py_image_display/py_image_display.html
-
+import sys
 import math
 import cv2
 import rospy
@@ -16,7 +16,9 @@ from cv_bridge import CvBridge, CvBridgeError
 from sensor_msgs.msg import Image
 from visualization_msgs.msg import Marker
 import numpy as np
+threshold = 100
 pic_resize = 400
+
 # Instantiate CvBridge
 bridge = CvBridge()
 # given PATTERN
@@ -110,8 +112,9 @@ def compare(i, cam_img): #i = id of given picture, cam_img = camera
 
          #cv.drawMatchesKnn expects list of lists as matches.
         img3 = cv2.drawMatchesKnn(pic[i],kp_f[i],cv2_img,kp_cam,good,None,flags=cv2.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)
-        cv2.imshow('look', img3)    #real time camera
-        cv2.waitKey(3)
+        #if(len(good)>threshold):
+        #    cv2.imshow('Detection', img3)    #real time camera
+        #    cv2.waitKey(1)
         #Flipped
         matches = bf.knnMatch(des_f[i],des_cam,k=2)
         # Apply ratio test
@@ -122,9 +125,9 @@ def compare(i, cam_img): #i = id of given picture, cam_img = camera
 
          #cv.drawMatchesKnn expects list of lists as matches.
         img3 = cv2.drawMatchesKnn(pic_f[i],kp_f[i],cv2_img,kp_cam,good,None,flags=cv2.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)
-        cv2.imshow('look', img3)    #real time camera
-        cv2.waitKey(3)
-
+        #if(len(good_f)>threshold):
+        #    cv2.imshow('Detection', img3)    #real time camera
+        #    cv2.waitKey(1)
         return len(good)+len(good_f) #how similar
     except:
         return -1
@@ -142,7 +145,7 @@ def image_callback(msg):
             if(this>max):
                 max_id=i
                 max=this
-        if(max<100): #thresholding for no picture detected
+        if(max<threshold): #thresholding for no picture detected
             voting[max_id]=0    #it is just a noise, reset vote counter
             max_id=len(name)-1
         #print(name[max_id], max)
@@ -152,7 +155,8 @@ def image_callback(msg):
                 pub_marking(cv2_img, max_id)
                 published[max_id] = True
     except CvBridgeError, e:
-        print(e)
+        #print(e)
+        i=1
 
 def main():
     rospy.init_node('image_detect')
@@ -165,4 +169,7 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except rospy.ROSInterruptException:
+        pass

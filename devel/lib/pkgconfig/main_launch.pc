@@ -1,0 +1,8 @@
+prefix=/home/jonathan/catkin_ws/devel
+
+Name: main_launch
+Description: Description of main_launch
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/jonathan/catkin_ws/devel/lib 
+Requires: 

@@ -608,3 +608,59 @@ int main(int argc, char** argv)
 #endif
 }
 
+Determining if the include file unistd.h exists passed with the following output:
+Change Dir: /home/jonathan/catkin_ws/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_cd681/fast"
+/usr/bin/make -f CMakeFiles/cmTC_cd681.dir/build.make CMakeFiles/cmTC_cd681.dir/build
+make[1]: Entering directory '/home/jonathan/catkin_ws/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_cd681.dir/CheckIncludeFile.c.o
+/usr/bin/cc     -o CMakeFiles/cmTC_cd681.dir/CheckIncludeFile.c.o   -c /home/jonathan/catkin_ws/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_cd681
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_cd681.dir/link.txt --verbose=1
+/usr/bin/cc       CMakeFiles/cmTC_cd681.dir/CheckIncludeFile.c.o  -o cmTC_cd681 -rdynamic 
+make[1]: Leaving directory '/home/jonathan/catkin_ws/build/CMakeFiles/CMakeTmp'
+
+
+Determining if the drand48 exist passed with the following output:
+Change Dir: /home/jonathan/catkin_ws/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_6f96e/fast"
+/usr/bin/make -f CMakeFiles/cmTC_6f96e.dir/build.make CMakeFiles/cmTC_6f96e.dir/build
+make[1]: Entering directory '/home/jonathan/catkin_ws/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_6f96e.dir/CheckSymbolExists.c.o
+/usr/bin/cc     -o CMakeFiles/cmTC_6f96e.dir/CheckSymbolExists.c.o   -c /home/jonathan/catkin_ws/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_6f96e
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_6f96e.dir/link.txt --verbose=1
+/usr/bin/cc       CMakeFiles/cmTC_6f96e.dir/CheckSymbolExists.c.o  -o cmTC_6f96e -rdynamic 
+make[1]: Leaving directory '/home/jonathan/catkin_ws/build/CMakeFiles/CMakeTmp'
+
+File /home/jonathan/catkin_ws/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stdlib.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef drand48
+  return ((int*)(&drand48))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the include file FL/Fl.H exists passed with the following output:
+Change Dir: /home/jonathan/catkin_ws/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_44380/fast"
+/usr/bin/make -f CMakeFiles/cmTC_44380.dir/build.make CMakeFiles/cmTC_44380.dir/build
+make[1]: Entering directory '/home/jonathan/catkin_ws/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_44380.dir/CheckIncludeFile.cxx.o
+/usr/bin/c++      -o CMakeFiles/cmTC_44380.dir/CheckIncludeFile.cxx.o -c /home/jonathan/catkin_ws/build/CMakeFiles/CMakeTmp/CheckIncludeFile.cxx
+Linking CXX executable cmTC_44380
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_44380.dir/link.txt --verbose=1
+/usr/bin/c++        CMakeFiles/cmTC_44380.dir/CheckIncludeFile.cxx.o  -o cmTC_44380 -rdynamic 
+make[1]: Leaving directory '/home/jonathan/catkin_ws/build/CMakeFiles/CMakeTmp'
+
+
