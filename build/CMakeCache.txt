@@ -971,7 +971,7 @@ UBUNTU:BOOL=TRUE
 UBUNTU_XENIAL:BOOL=TRUE
 
 //Path to a file.
-_file_name:FILEPATH=/home/jonathan/catkin_ws/src/navigation/clear_costmap_recovery/test/clear_tests.launch
+_file_name:FILEPATH=/home/jonathan/catkin_ws/src/slam_gmapping/gmapping/test/basic_localization_laser_different_beamcount.test
 
 //Path to a file.
 _gmock_INCLUDES:FILEPATH=/usr/include/gmock/gmock.h
@@ -1345,6 +1345,12 @@ layers_LIB_DEPENDS:STATIC=general;costmap_2d;
 
 //Path to a library.
 lib:FILEPATH=/opt/ros/kinetic/lib/libcv_bridge.so
+
+//Value Computed by CMake
+main_BINARY_DIR:STATIC=/home/jonathan/catkin_ws/build/main
+
+//Value Computed by CMake
+main_SOURCE_DIR:STATIC=/home/jonathan/catkin_ws/src/main
 
 //Value Computed by CMake
 main_launch_BINARY_DIR:STATIC=/home/jonathan/catkin_ws/build/main_launch
@@ -1788,7 +1794,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=43
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=25
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP
