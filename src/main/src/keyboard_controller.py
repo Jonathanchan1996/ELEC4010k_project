@@ -31,7 +31,7 @@ a s d           j k l
 where x is stop :p
 j is angular Increase
 l is angular decrease
-exit: f
+exit: Ctrl+c
 ============================
 """
 
@@ -107,10 +107,10 @@ def main():
     rospy.init_node('controller', anonymous=True) #my name
     rate = rospy.Rate(10) # 10hz
     print(msg)
-    while(1):
+    while 1:
         time.sleep(0.05)
         key = getKey()
-        if(key=='f' or key=='c'):
+        if(key=='\x03'):
             break
         else:
             print(msg)
@@ -121,7 +121,14 @@ def main():
 if __name__ == '__main__':
     try:
         main()
-    #except rospy.ROSInterruptException:
-    #    pass
+    except rospy.ROSInterruptException:
+        pass
     finally:
-        print "End control"
+
+        pub = rospy.Publisher('/vrep/cmd_vel', Twist, queue_size=10)
+        twist = Twist()
+        twist.linear.x = 0; twist.linear.y = 0; twist.linear.z = 0
+        twist.angular.x = 0; twist.angular.y = 0; twist.angular.z = 0
+        pub.publish(twist)
+        termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)
+        print "end Controller"

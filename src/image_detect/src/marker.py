@@ -1,9 +1,9 @@
+#!/usr/bin/env python
 import rospy
 from visualization_msgs.msg import Marker
 
 name = ["Obama", "Avril", "Levi", "Bloom", "chinese", "No picture"]
 marker_arr = []
-
 for i in range(0,4):
     marker = Marker()
     marker.header.frame_id = "camera_link"
@@ -21,18 +21,19 @@ for i in range(0,4):
     marker.id = i
     marker_arr.append(marker)
 
-marker_arr[0].pose.position.x = 10
-marker_arr[0].pose.position.y = 10
-marker_arr[0].pose.position.z = 0
-
 def main():
+    marker_arr[0].pose.position.x = 0
+    marker_arr[0].pose.position.y = 0
+    marker_arr[0].pose.position.z = 0
     print "Hard code name marker"
+    rospy.init_node('vmker')
     pub = rospy.Publisher('visualization_marker', Marker, queue_size=100)
-    rate = rospy.Rate(1) # 10hz
+    rate = rospy.Rate(1) # 1hz
+    pub.publish(marker_arr[0])
     while not rospy.is_shutdown():
-        pub.publish(marker_arr[name_id])
+        pub.publish(marker_arr[0])
         rospy.spin()
-        rate.sleep()
+        #rate.sleep()
 
 if __name__ == '__main__':
     main()

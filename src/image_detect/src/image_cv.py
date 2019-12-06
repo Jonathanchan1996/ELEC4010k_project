@@ -16,7 +16,7 @@ from cv_bridge import CvBridge, CvBridgeError
 from sensor_msgs.msg import Image
 from visualization_msgs.msg import Marker
 import numpy as np
-threshold = 100
+threshold = 120
 pic_resize = 400
 
 # Instantiate CvBridge
@@ -37,7 +37,8 @@ pic_f.append(cv2.imread(path+'avril.jpg'))
 pic_f.append(cv2.imread(path+'levi.jpg'))
 pic_f.append(cv2.imread(path+'bloom.jpg'))
 pic_f.append(cv2.imread(path+'chinese.jpg'))
-voting =[]
+voting =[] #voting check for sift
+voting2=[] #voting check for sqare
 published =[]
 pic_len = len(pic)
 # Initiate SIFT detector
@@ -49,10 +50,12 @@ des_f= [None] * pic_len
 kp_f = [None] * pic_len
 for i in range(0, pic_len):
     pic[i] = cv2.resize(pic[i], (pic_resize,pic_resize), interpolation = cv2.INTER_AREA)
-    pic_f[i]=cv2.flip(pic[i], 1)
+    #pic_f[i]=cv2.flip(pic[i], 1)
+    pic[i]=cv2.flip(pic[i], 1)
     kp[i], des[i] = sift.detectAndCompute(pic[i],None)
     kp_f[i], des_f[i] = sift.detectAndCompute(pic_f[i],None)
     voting.append(0)
+    voting2.append(0)
     published.append(False)
 # BFMatcher with default params
 bf = cv2.BFMatcher()
@@ -85,18 +88,32 @@ def pub_marking(img,name_id): #Camera resectioning & make marker
     c = max(contours, key=cv2.contourArea)
     x, y, w, h = cv2.boundingRect(c)
     # draw the book contour (in green)
-    cv2.rectangle(cv2_img,(x,y),(x+w,y+h),(0,255,0),2)
-    im_pix_h = h / 2
-    im_theta = ((math.pi / 8) * h) / (img.shape[1])
-    dist_pix = (im_pix_h) / math.tan(im_theta)
-    dist_x_real = ((dist_pix * 0.5) / im_pix_h)
+    ratio = float(w)/h
+    #print("ratio:", ratio, end ="")
+    if(ratio>1.1 and ratio<0.5):
+        #cv2.rectangle(gray,(x,y),(x+w,y+h),(0,0,255),2)
+        #cv2.imshow('squre', gray)
+        #cv2.waitKey(1)
+        voting2[name_id]=0;
+        return
+    else:
+        voting2[name_id]=voting2[name_id]+1;
+        #cv2.rectangle(gray,(x,y),(x+w,y+h),(0,255,0),2)
+        #cv2.imshow('squre', gray)
+        #cv2.waitKey(1)
+    if(voting2[name_id]>15):
+        print name[name_id], "Pass ", ratio
+        im_pix_h = h / 2
+        im_theta = ((math.pi / 8) * h) / (img.shape[1])
+        dist_pix = (im_pix_h) / math.tan(im_theta)
+        dist_x_real = ((dist_pix * 0.5) / im_pix_h)
 
-    marker_arr[name_id].pose.position.x = dist_x_real
-    marker_arr[name_id].pose.position.y = ((x + w / 2) / img.shape[1])
-    marker_arr[name_id].pose.position.z = 0
+        marker_arr[name_id].pose.position.x = dist_x_real
+        marker_arr[name_id].pose.position.y = ((x + w / 2) / img.shape[1])
+        marker_arr[name_id].pose.position.z = 0
 
-    print(name[name_id] + " " + str(dist_x_real))
-    pub.publish(marker_arr[name_id])
+        #print(name[name_id] + " " + str(dist_x_real))
+        pub.publish(marker_arr[name_id])
 
 
 def compare(i, cam_img): #i = id of given picture, cam_img = camera
@@ -111,7 +128,7 @@ def compare(i, cam_img): #i = id of given picture, cam_img = camera
                 good.append([m])
 
          #cv.drawMatchesKnn expects list of lists as matches.
-        img3 = cv2.drawMatchesKnn(pic[i],kp_f[i],cv2_img,kp_cam,good,None,flags=cv2.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)
+        #img3 = cv2.drawMatchesKnn(pic[i],kp_f[i],cv2_img,kp_cam,good,None,flags=cv2.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)
         #if(len(good)>threshold):
         #    cv2.imshow('Detection', img3)    #real time camera
         #    cv2.waitKey(1)
@@ -124,7 +141,7 @@ def compare(i, cam_img): #i = id of given picture, cam_img = camera
                 good.append([m])
 
          #cv.drawMatchesKnn expects list of lists as matches.
-        img3 = cv2.drawMatchesKnn(pic_f[i],kp_f[i],cv2_img,kp_cam,good,None,flags=cv2.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)
+        #img3 = cv2.drawMatchesKnn(pic_f[i],kp_f[i],cv2_img,kp_cam,good,None,flags=cv2.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)
         #if(len(good_f)>threshold):
         #    cv2.imshow('Detection', img3)    #real time camera
         #    cv2.waitKey(1)
